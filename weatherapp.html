@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>weatherapp</title>
+</head>
+<style>
+    *
+    {
+        margin: 0;
+        padding: 0;
+        font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+        box-sizing: border-box;
+    }
+    body
+    {
+        background-color: #222;
+    }
+    .card
+    {
+        width: 90%;
+        max-width: 470px;
+        background: linear-gradient(135deg , #00feba , #5b548a);
+        color: #fff;
+        margin: 100px auto 0;
+        border-radius: 20px;
+        padding :40px 35px;
+        text-align: center;
+    }
+    .search
+    {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .search input
+    {
+        border: 0;
+        outline: 0;
+        background: #ebfffc;
+        color: #555;
+        padding: 10px 25px;
+        height: 60px;
+        border-radius: 30px;
+        flex: 1;
+        margin-right: 16px;
+        font-size: 18px;
+    }
+    .search button
+    {
+        border: 0;
+        outline: 0;
+        background: #ebfffc;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        cursor: pointer;
+
+    }
+    .search button img
+    {
+      width: 16px;
+    }
+    .weather-icon
+    {
+      width: 170px;
+      margin-top: 30px;
+    }
+    .weather h1
+    {
+      font-size: 80px;
+      font-weight: 500;
+    }
+    .weather h2
+    {
+      font-size: 45px;
+      font-weight: 400;
+      margin-top: -10px;
+    }
+    .details
+    {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 20px;
+        margin-top: 50px;
+    }
+    .col 
+    {
+        display: flex;
+        align-items: center;
+        text-align: left;
+    }
+    .col img
+    {
+        width: 40px;
+        margin-right: 10px;
+
+    }
+    .humidity , .wind 
+    {
+        font-size: 28px;
+        margin-top: -6px;
+    }
+    .weather
+    {
+        display: none;
+    }
+</style>
+</style>
+<body>
+<div class="card">
+    <div class="search">
+        <input type="text" placeholder="Write Here" spellcheck="false">
+        <button><img src="img/weather-app-img/images/search.png"</button>
+    </div>
+    <div class="weather">
+        <img src="img/weather-app-img/images/rain.png " class="weather-icon">
+        <h1 class="temp">22°C</h1>
+        <h2 class="city">New York</h2>
+        <div class="details">
+            <div class="col">
+                <img src="img/weather-app-img/images/humidity.png">
+                <div>
+                    <p class="humidity">50%</p>
+                    <p>Humidity</p>
+                </div>
+            </div>
+            <div class="col">
+                <img src="img/weather-app-img/images/wind.png">
+                <div>
+                    <p class="wind">15 Kl/h</p>
+                    <p>Wind Speed</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    const apiKey = "10723b234cbdfca9349b1f164dafd8b8"; 
+    const url = "https://api.openweathermap.org/data/2.5/weather?q=";
+    const searchbox = document.querySelector(".search input");
+    const searchbtn = document.querySelector(".search button");
+    const weatherIcon = document.querySelector(".weather-icon");
+
+    async function CheckWeather(city) {
+        try {
+            const response = await fetch(url + city + `&units=metric&appid=${apiKey}`);
+            if (!response.ok) {
+                throw new Error("Weather data fetch failed.");
+            }
+            var data = await response.json();
+            console.log(data);
+    
+            document.querySelector(".city").innerHTML = data.name;
+            document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°C";
+            document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
+            document.querySelector(".wind").innerHTML = data.wind.speed + "km/h";
+            
+            
+            const weatherCondition = data.weather[0].main;
+            updateWeatherIcon(weatherCondition);
+
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    }
+
+    
+    function updateWeatherIcon(weatherCondition) {
+        let iconUrl;
+        switch (weatherCondition.toLowerCase()) {
+            case 'clear':
+                iconUrl = 'img/weather-app-img/images/clear.png'; 
+                break;
+            case 'clouds':
+                iconUrl = 'img/weather-app-img/images/clouds.png'; 
+                break;
+            case 'rain':
+                iconUrl = 'img/weather-app-img/images/rain.png'; 
+                break;
+            case 'snow':
+                iconUrl = 'img/weather-app-img/images/snow.png'; 
+                break;
+            default:
+                iconUrl = 'img/weather-app-img/images/wind.png'; 
+        }
+        weatherIcon.src = iconUrl; 
+        document.querySelector(".weather").style.display = "block";
+
+    }
+
+    
+    searchbtn.addEventListener("click", () => {
+        CheckWeather(searchbox.value);
+    });
+</script>
+</body>
+</html>

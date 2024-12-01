@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quote Generator</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            transition: background-color 0.5s ease;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 600px;
+            width: 90%;
+            transition: box-shadow 0.3s ease;
+        }
+        .container:hover {
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+        #quote-box {
+            margin-bottom: 2rem;
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        #quote-text {
+            font-size: 1.5rem;
+            color: #444;
+            line-height: 1.4;
+            margin-bottom: 1rem;
+        }
+        #quote-author {
+            font-style: italic;
+            color: #666;
+            font-size: 1.1rem;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button:active {
+            transform: scale(0.98);
+        }
+        .social-buttons {
+            margin-top: 1rem;
+        }
+        .social-buttons a {
+            color: #4CAF50;
+            font-size: 1.5rem;
+            margin: 0 0.5rem;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .social-buttons a:hover {
+            color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-quote-left"></i> Quote Generator</h1>
+        <div id="quote-box">
+            <p id="quote-text"></p>
+            <p id="quote-author"></p>
+        </div>
+        <button onclick="generateQuote()">Generate New Quote</button>
+        <div class="social-buttons">
+            <a href="#" onclick="tweetQuote()"><i class="fab fa-twitter"></i></a>
+            <a href="#" onclick="shareOnFacebook()"><i class="fab fa-facebook"></i></a>
+        </div>
+    </div>
+
+    <script>
+        const quotes = [
+            { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+            { text: "Life is what happens when you're busy making other plans.", author: "John Lennon" },
+            { text: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
+            { text: "Success is not final, failure is not fatal: it is the courage to continue that counts.", author: "Winston Churchill" },
+            { text: "In the end, we will remember not the words of our enemies, but the silence of our friends.", author: "Martin Luther King Jr." },
+            { text: "The greatest glory in living lies not in never falling, but in rising every time we fall.", author: "Nelson Mandela" },
+            { text: "The way to get started is to quit talking and begin doing.", author: "Walt Disney" },
+            { text: "If you look at what you have in life, you'll always have more.", author: "Oprah Winfrey" },
+            { text: "If you set your goals ridiculously high and it's a failure, you will fail above everyone else's success.", author: "James Cameron" },
+            { text: "You must be the change you wish to see in the world.", author: "Mahatma Gandhi" }
+        ];
+
+        function generateQuote() {
+            const randomIndex = Math.floor(Math.random() * quotes.length);
+            const quote = quotes[randomIndex];
+            document.getElementById('quote-text').textContent = `"${quote.text}"`;
+            document.getElementById('quote-author').textContent = `- ${quote.author}`;
+            
+            
+            document.body.style.backgroundColor = getRandomColor();
+        }
+
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        function tweetQuote() {
+            const quoteText = document.getElementById('quote-text').textContent;
+            const quoteAuthor = document.getElementById('quote-author').textContent;
+            const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(quoteText + ' ' + quoteAuthor)}`;
+            window.open(twitterUrl, '_blank');
+        }
+
+        function shareOnFacebook() {
+            const quoteText = document.getElementById('quote-text').textContent;
+            const quoteAuthor = document.getElementById('quote-author').textContent;
+            const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent(quoteText + ' ' + quoteAuthor)}`;
+            window.open(facebookUrl, '_blank');
+        }
+
+        
+        generateQuote();
+    </script>
+</body>
+</html>

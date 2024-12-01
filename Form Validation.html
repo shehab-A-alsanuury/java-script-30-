@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Validation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1d2b64, #f8cdda);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            padding: 30px 40px;
+            width: 350px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-container:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            font-size: 2em;
+            color: #333;
+            background: linear-gradient(45deg, #ff6f61, #de6f92);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 5px rgba(255, 111, 97, 0.5), 0 0 10px rgba(255, 111, 97, 0.3); }
+            to { text-shadow: 0 0 10px rgba(255, 111, 97, 1), 0 0 20px rgba(255, 111, 97, 0.7); }
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 10px;
+            top: 12px;
+            color: #888;
+            transition: color 0.3s;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 40px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .input-group input:focus {
+            border-color: #ff6f61;
+            box-shadow: 0 0 8px rgba(255, 111, 97, 0.5);
+            outline: none;
+        }
+
+        .input-group input:focus + i {
+            color: #ff6f61;
+        }
+
+        .error-message {
+            display: none;
+            color: #e74c3c;
+            font-size: 0.9em;
+            margin-top: 5px;
+            text-align: left;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        button {
+            background: linear-gradient(45deg, #ff6f61, #de6f92);
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.3s, transform 0.1s, box-shadow 0.3s;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            width: 100%;
+        }
+
+        button:hover {
+            background: linear-gradient(45deg, #de6f92, #ff6f61);
+            box-shadow: 0 7px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        .success-message {
+            display: none;
+            color: #28a745;
+            animation: fadeIn 0.5s ease-in-out;
+            margin-top: 15px;
+        }
+
+        .password-strength {
+            height: 5px;
+            background-color: #ddd;
+            margin-top: 5px;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .password-strength-bar {
+            height: 100%;
+            width: 0;
+            transition: width 0.3s, background-color 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Create Account</h2>
+        <form id="registrationForm">
+            <div class="input-group">
+                <i class="fas fa-user"></i>
+                <input type="text" id="name" placeholder="Full Name" required aria-describedby="nameError">
+                <span class="error-message" id="nameError">Please enter your name.</span>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="email" placeholder="Email" required aria-describedby="emailError">
+                <span class="error-message" id="emailError">Please enter a valid email.</span>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="password" placeholder="Password" required aria-describedby="passwordError">
+                <span class="error-message" id="passwordError">Password must be at least 8 characters with a mix of letters, numbers, and symbols.</span>
+                <div class="password-strength">
+                    <div class="password-strength-bar" id="passwordStrengthBar"></div>
+                </div>
+            </div>
+            <button type="submit">Register</button>
+        </form>
+        <div class="success-message" id="successMessage">Registration Successful!</div>
+    </div>
+
+    <script>
+        const form = document.getElementById("registrationForm");
+        const nameInput = document.getElementById("name");
+        const emailInput = document.getElementById("email");
+        const passwordInput = document.getElementById("password");
+        const passwordStrengthBar = document.getElementById("passwordStrengthBar");
+        const successMessage = document.getElementById("successMessage");
+
+        function showError(inputElement, errorMessage) {
+            const errorElement = document.getElementById(inputElement.id + "Error");
+            errorElement.textContent = errorMessage;
+            errorElement.style.display = "block";
+            inputElement.setAttribute("aria-invalid", "true");
+        }
+
+        function hideError(inputElement) {
+            const errorElement = document.getElementById(inputElement.id + "Error");
+            errorElement.style.display = "none";
+            inputElement.setAttribute("aria-invalid", "false");
+        }
+
+        function validateName() {
+            const name = nameInput.value.trim();
+            if (name === "") {
+                showError(nameInput, "Please enter your name.");
+                return false;
+            }
+            hideError(nameInput);
+            return true;
+        }
+
+        function validateEmail() {
+            const email = emailInput.value.trim();
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(email)) {
+                showError(emailInput, "Please enter a valid email address.");
+                return false;
+            }
+            hideError(emailInput);
+            return true;
+        }
+
+        function validatePassword() {
+            const password = passwordInput.value;
+            const passwordStrength = calculatePasswordStrength(password);
+            updatePasswordStrengthBar(passwordStrength);
+
+            if (password.length < 8 || passwordStrength < 2) {
+                showError(passwordInput, "Password must be at least 8 characters with a mix of letters, numbers, and symbols.");
+                return false;
+            }
+            hideError(passwordInput);
+            return true;
+        }
+
+        function calculatePasswordStrength(password) {
+            let strength = 0;
+            if (password.length >= 8) strength++;
+            if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+            if (password.match(/\d/)) strength++;
+            if (password.match(/[^a-zA-Z\d]/)) strength++;
+            return strength;
+        }
+
+        function updatePasswordStrengthBar(strength) {
+            const colors = ["#ff4d4d", "#ffa64d", "#ffff4d", "#4dff4d"];
+            const width = (strength / 4) * 100;
+            passwordStrengthBar.style.width = `${width}%`;
+            passwordStrengthBar.style.backgroundColor = colors[strength - 1] || "";
+        }
+
+        nameInput.addEventListener("input", validateName);
+        emailInput.addEventListener("input", validateEmail);
+        passwordInput.addEventListener("input", validatePassword);
+
+        form.addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const isNameValid = validateName();
+            const isEmailValid = validateEmail();
+            const isPasswordValid = validatePassword();
+
+            if (isNameValid && isEmailValid && isPasswordValid) {
+                successMessage.style.display = "block";
+                form.reset();
+                passwordStrengthBar.style.width = "0";
+                setTimeout(() => {
+                    successMessage.style.display = "none";
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>

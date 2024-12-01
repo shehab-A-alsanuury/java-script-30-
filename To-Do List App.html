@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List App</title>
+</head>
+<style>
+*
+{
+margin: 0;
+padding: 0;
+font-family: Georgia, 'Times New Roman', Times, serif;
+box-sizing: border-box;
+}
+.container
+{
+         width: 100%;
+         height: 100vh;
+         background: linear-gradient(135deg ,#ffffff , #000000);
+         padding: 10px;
+}
+.todo-app
+{
+        width: 100%;
+        max-width: 540px;
+        background: #ffffff;
+        margin: 100px auto 20px;
+        border-radius: 20px;
+        padding :40px 30px 70px;
+        border-radius: 10px;
+        
+}
+.todo-app h2
+{
+       color: rgb(0, 237, 158);
+       display: flex;
+       align-items: center;
+       margin-bottom: 20px;
+}
+.todo-app img
+{
+      width: 30px;
+      margin-left: 10px;
+}
+.row
+{
+         display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #edeef0;
+        border-radius: 30px;
+        padding-left: 20px;
+        margin-bottom: 25px;
+}
+input
+{
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    padding: 10px;
+    font-weight: 14px;
+}
+button
+{
+    padding: 16px 50px;
+    outline: none;
+    border: none;
+    border-radius: 40px;
+    background: #ff5945;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+
+}
+ul li
+{
+    list-style: none;
+    font-size: 17px;
+    padding: 12px 8px 12px 50px;
+    user-select: none;
+    cursor: pointer;
+    position: relative;
+}
+ul li::before {
+    content: '';
+    position: absolute;
+    height: 28px;
+    width: 28px;
+    border-radius: 50%;
+    background-image: url(images/unchecked.png);
+    background-size: cover;
+    background-position: center;
+    top: 12px;
+    left: 8px;
+    z-index: 1; 
+}
+ul li.cheked
+{
+color: #555;
+text-decoration: line-through;
+}
+ul li.cheked::before
+{
+    background-image: url(images/checked.png);
+
+}
+ul li span
+{
+    position: absolute;
+    right: 0;
+    top: 5px;
+    width: 40px;
+    height: 40px;
+    font-size: 22px;
+    color: #555;
+    line-height: 40px;
+    text-align: center;
+    border-radius: 50%;
+}
+ul li span:hover
+{
+    background: #edeef0;
+}
+</style>
+<body>
+<div class="container">
+    <div class="todo-app">
+        <h2>to-do-list <img src="images/icon.png"></h2>
+        <div class="row">
+            <input type="text" id="input-box"placeholder="add your text">
+            <button onclick="addtask()">ADD</button>
+        </div>
+        <ul id="list-container">
+            <!-- <li class="cheked">task 1</li>
+            <li>task 2</li>
+            <li>task 3</li> -->
+
+        </ul>
+    </div>
+</div>
+
+<script>
+    const inputbox = document.getElementById("input-box");
+    const listcontainer = document.getElementById("list-container");
+
+    function addtask() {
+        if (inputbox.value === '') {
+            alert("You must write something!");
+        } else {
+            let li = document.createElement("li");
+            li.innerHTML = inputbox.value;
+
+            let span = document.createElement("span");
+            span.innerHTML = "\u00d7"; 
+            li.appendChild(span);
+            listcontainer.appendChild(li);
+        }
+        inputbox.value = ""; 
+        saveDate();
+        
+    }
+
+    listcontainer.addEventListener("click", function(e) {
+        if (e.target.tagName === "LI") {
+            e.target.classList.toggle("cheked");
+            saveDate();
+        } else if (e.target.tagName === "SPAN") {
+            e.target.parentElement.remove(); 
+            saveDate();
+        }
+    }, false);
+    function saveDate(){
+        localStorage.setItem("data" ,listcontainer.innerHTML);
+    }
+    function showtask(){
+        listcontainer.innerHTML =localStorage.getItem("data");
+    }
+    showtask();
+</script>
+</body>
+</html>

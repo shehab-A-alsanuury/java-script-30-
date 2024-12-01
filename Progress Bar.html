@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circular Progress Bar</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            font-family: 'Arial', sans-serif;
+        }
+
+        .progress-bar {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background-color: transparent;
+        }
+
+        .progress-circle {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            clip-path: circle(50% at 50% 50%);
+        }
+
+        .progress-circle svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .progress-circle circle {
+            fill: none;
+            stroke: url(#gradient);
+            stroke-width: 12;
+            stroke-dasharray: 283;
+            stroke-dashoffset: 283;
+            transition: stroke-dashoffset 0.6s ease;
+        }
+
+        .progress-value {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+        }
+
+        svg {
+            transform: rotate(-90deg);
+        }
+
+        /* Gradient Definition */
+        .gradient {
+            position: absolute;
+            width: 0;
+            height: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="progress-bar">
+        <div class="progress-circle">
+            <svg>
+                <defs>
+                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#ff6a00; stop-opacity:1" />
+                        <stop offset="50%" style="stop-color:#ee0979; stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#00a8ff; stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <circle cx="50%" cy="50%" r="45%" />
+            </svg>
+            <div class="progress-value">0%</div>
+        </div>
+    </div>
+
+    <script>
+        const progressCircle = document.querySelector('.progress-circle circle');
+        const progressValue = document.querySelector('.progress-value');
+
+        let progress = 0;
+
+        function updateProgress() {
+            progress += 1;
+            progressCircle.style.strokeDashoffset = 283 - (progress / 100) * 283;
+            progressValue.textContent = `${progress}%`;
+            if (progress < 100) {
+                requestAnimationFrame(updateProgress);
+            }
+        }
+
+        updateProgress();
+    </script>
+
+</body>
+</html>

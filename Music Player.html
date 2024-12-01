@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Player</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(to right, #ff7e5f, #feb47b);
+}
+
+.music-player {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    width: 320px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.image-container {
+    margin-bottom: 20px;
+}
+
+#artist-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #e0e0e0;
+    transition: transform 0.3s;
+}
+
+.song-info h2 {
+    font-size: 24px;
+    color: #333;
+}
+
+.song-info h3 {
+    font-size: 18px;
+    color: #777;
+}
+
+.controls {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.controls button {
+    background-color: #6200ea;
+    border: none;
+    font-size: 26px;
+    color: white;
+    cursor: pointer;
+    padding: 12px;
+    border-radius: 50%;
+    transition: background-color 0.3s, transform 0.2s;
+    width: 60px;
+    height: 60px;
+}
+
+.controls button:hover {
+    background-color: #3700b3;
+    transform: scale(1.1);
+}
+
+#progress-bar {
+    width: 100%;
+    margin: 15px 0;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.time {
+    font-size: 14px;
+    color: #555;
+}
+</style>
+<body>
+    <div class="music-player">
+        <div class="image-container">
+            <img src="images/sia-christmas.jpg" alt="Sia" id="artist-image">
+        </div>
+        <div class="song-info">
+            <h2 id="song-title">Unstoppable</h2>
+            <h3 id="artist-name">Sia</h3>
+        </div>
+        <div class="controls">
+            <button id="prev" title="Previous"><i class="fas fa-backward"></i></button>
+            <button id="play-pause" title="Play/Pause"><i class="fas fa-play" id="play-icon"></i><i class="fas fa-pause" id="pause-icon" style="display: none;"></i></button>
+            <button id="next" title="Next"><i class="fas fa-forward"></i></button>
+        </div>
+        <input type="range" id="progress-bar" value="0" step="0.1">
+        <div class="time">
+            <span id="current-time">0:00</span> / <span id="duration">0:00</span>
+        </div>
+    </div>
+
+    <audio id="audio" src="images/Sia - Chandelier (electric guitar cover).mp3"></audio>
+    <audio id="audio2" src="images/Sia - Unstoppable (Official Video - Live from the Nostalgic For The Present Tour).mp3"></audio>
+
+    <script>
+const audio1 = document.getElementById('audio');
+const audio2 = document.getElementById('audio2');
+const playPauseBtn = document.getElementById('play-pause');
+const prevBtn = document.getElementById('prev');
+const nextBtn = document.getElementById('next');
+const progressBar = document.getElementById('progress-bar');
+const currentTimeEl = document.getElementById('current-time');
+const durationEl = document.getElementById('duration');
+
+const songs = [
+    { title: "Unstoppable", audio: audio1 },
+    { title: "Chandelier", audio: audio2 },
+];
+
+let currentSongIndex = 0;
+
+function loadSong(song) {
+    song.audio.currentTime = 0; 
+    song.audio.play();
+    document.getElementById('song-title').textContent = song.title;
+    document.getElementById('artist-name').textContent = 'Sia'; // You can update this if you have different artists.
+    updateProgress(); // Reset progress on load
+}
+
+function playPauseSong() {
+    const currentAudio = songs[currentSongIndex].audio;
+
+    if (currentAudio.paused) {
+        currentAudio.play();
+        playPauseBtn.querySelector('#play-icon').style.display = 'none';
+        playPauseBtn.querySelector('#pause-icon').style.display = 'block';
+        document.getElementById('artist-image').style.transform = 'scale(1.1)';
+    } else {
+        currentAudio.pause();
+        playPauseBtn.querySelector('#play-icon').style.display = 'block';
+        playPauseBtn.querySelector('#pause-icon').style.display = 'none';
+        document.getElementById('artist-image').style.transform = 'scale(1)';
+    }
+}
+
+function prevSong() {
+    currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+    loadSong(songs[currentSongIndex]);
+}
+
+function nextSong() {
+    currentSongIndex = (currentSongIndex + 1) % songs.length;
+    loadSong(songs[currentSongIndex]);
+}
+
+function updateProgress() {
+    const currentAudio = songs[currentSongIndex].audio;
+    const progress = (currentAudio.currentTime / currentAudio.duration) * 100;
+
+    progressBar.value = progress;
+
+    currentTimeEl.textContent = formatTime(currentAudio.currentTime);
+    durationEl.textContent = formatTime(currentAudio.duration);
+
+    if (!currentAudio.paused) {
+        requestAnimationFrame(updateProgress);
+    }
+}
+
+function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+}
+
+playPauseBtn.addEventListener('click', playPauseSong);
+prevBtn.addEventListener('click', prevSong);
+nextBtn.addEventListener('click', nextSong);
+progressBar.addEventListener('input', () => {
+    const currentAudio = songs[currentSongIndex].audio;
+    currentAudio.currentTime = (progressBar.value / 100) * currentAudio.duration;
+});
+
+setInterval(updateProgress, 1000);
+loadSong(songs[currentSongIndex]);
+    </script>
+</body>
+</html>

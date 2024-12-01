@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toast Notifications Bar</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #ffffff;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        button {
+            background: #ffffff;
+            color: #764ba2;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            margin: 10px;
+        }
+
+        button:hover {
+            background: #764ba2;
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        
+        .toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: rgba(255, 255, 255, 0.9);
+            text-align: left;
+            border-radius: 10px;
+            padding: 16px;
+            position: fixed;
+            z-index: 1;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            font-size: 17px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transition: visibility 0s, opacity 0.5s ease-in-out, bottom 0.5s ease-in-out;
+            overflow: hidden;
+        }
+
+        .toast.show {
+            visibility: visible;
+            opacity: 1;
+            bottom: 50px;
+        }
+
+        .toast i {
+            margin-right: 12px;
+        }
+
+        .toast .close-btn {
+            margin-left: auto;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        
+        .toast .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 5px;
+            animation: shrinkProgressBar 3s linear forwards;
+        }
+
+        
+        .toast-success .progress-bar {
+            background: #4CAF50; 
+        }
+
+        .toast-error .progress-bar {
+            background: #F44336; 
+        }
+
+        .toast-invalid .progress-bar {
+            background: #FF9800;
+        }
+
+        @keyframes shrinkProgressBar {
+            from {
+                width: 100%;
+            }
+            to {
+                width: 0;
+            }
+        }
+
+       
+        .toast-success {
+            color: #4CAF50;
+        }
+
+        .toast-error {
+            color: #F44336;
+        }
+
+        .toast-invalid {
+            color: #FF9800;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <button onclick="showToast('success', 'Operation Successful!')">Show Success</button>
+        <button onclick="showToast('error', 'An Error Occurred!')">Show Error</button>
+        <button onclick="showToast('invalid', 'Invalid Input!')">Show Invalid</button>
+    </div>
+
+    
+    <div id="toast" class="toast">
+        <i id="toast-icon" class="fas"></i>
+        <span id="toast-message"></span>
+        <span class="close-btn" onclick="hideToast()">&times;</span>
+        <div class="progress-bar"></div>
+    </div>
+
+    <script>
+        
+        function showToast(type, message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            const toastIcon = document.getElementById('toast-icon');
+            const progressBar = document.querySelector('.progress-bar');
+
+            
+            progressBar.style.animation = 'none';
+            progressBar.offsetHeight; 
+            progressBar.style.animation = null;
+
+           
+            toastMessage.textContent = message;
+            
+            
+            toast.className = 'toast';
+            toastIcon.className = 'fas';
+
+            
+            switch(type) {
+                case 'success':
+                    toast.classList.add('toast-success');
+                    toastIcon.classList.add('fa-check-circle');
+                    break;
+                case 'error':
+                    toast.classList.add('toast-error');
+                    toastIcon.classList.add('fa-times-circle');
+                    break;
+                case 'invalid':
+                    toast.classList.add('toast-invalid');
+                    toastIcon.classList.add('fa-exclamation-circle');
+                    break;
+                default:
+                    toastIcon.classList.add('fa-info-circle');
+            }
+
+           
+            toast.classList.add('show');
+
+            
+            setTimeout(() => {
+                hideToast();
+            }, 3000);
+        }
+
+        function hideToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.remove('show');
+        }
+    </script>
+
+</body>
+</html>

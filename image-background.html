@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Background Change Effect</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            height: 100%;
+            font-family: Arial, sans-serif;
+        }
+
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .active {
+            opacity: 1;
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 20px;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .nav-buttons {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-button {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background-color: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-button.active {
+            background-color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="background-container">
+        <div class="background active" style="background-image: url('https://images.unsplash.com/photo-1510784722466-f2aa9c52fff6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80');"></div>
+        <div class="background" style="background-image: url('https://images.unsplash.com/photo-1501854140801-50d01698950b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80');"></div>
+        <div class="background" style="background-image: url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1742&q=80');"></div>
+    </div>
+
+    <div class="content">
+        <h1>Welcome to Our Website</h1>
+        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Dolorem laboriosam reiciendis nemo esse, autem dicta illum ad repudiandae eius voluptatem ipsam! Minus repudiandae doloribus dolores quibusdam sunt natus voluptatibus quasi!</p>
+    </div>
+
+    <div class="nav-buttons"></div>
+
+    <script>
+        const backgrounds = document.querySelectorAll('.background');
+        const navButtons = document.querySelector('.nav-buttons');
+        let currentIndex = 0;
+        let interval;
+
+        function createNavButtons() {
+            backgrounds.forEach((_, index) => {
+                const button = document.createElement('div');
+                button.classList.add('nav-button');
+                button.addEventListener('click', () => goToSlide(index));
+                navButtons.appendChild(button);
+            });
+            updateNavButtons();
+        }
+
+        function updateNavButtons() {
+            const buttons = document.querySelectorAll('.nav-button');
+            buttons.forEach((button, index) => {
+                if (index === currentIndex) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            });
+        }
+
+        function goToSlide(index) {
+            backgrounds[currentIndex].classList.remove('active');
+            currentIndex = index;
+            backgrounds[currentIndex].classList.add('active');
+            updateNavButtons();
+            resetInterval();
+        }
+
+        function nextSlide() {
+            goToSlide((currentIndex + 1) % backgrounds.length);
+        }
+
+        function resetInterval() {
+            clearInterval(interval);
+            interval = setInterval(nextSlide, 5000);
+        }
+
+        createNavButtons();
+        resetInterval();
+    </script>
+</body>
+</html>

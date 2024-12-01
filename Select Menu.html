@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Select Menu</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+ 
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Montserrat", sans-serif;
+    }
+
+    body {
+      background-color: #c7ecee;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .select-menu {
+      width: 300px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .select {
+      background-color: #201e1e;
+      padding: 20px;
+      color: #fff;
+      font-weight: 500;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.3s ease;
+    }
+
+    .select:hover {
+      background-color: #292929;
+    }
+
+    .options-list {
+      position: absolute;
+      width: 100%;
+      background-color: #f9f9f9;
+      border-radius: 6px;
+      margin-top: 14px;
+      padding: 0 20px;
+      max-height: 0; 
+      overflow-y: hidden;
+      transition: max-height 0.4s ease, padding 0.4s ease; 
+    }
+
+    .option {
+      padding: 8px 0;
+      font-weight: 500;
+      font-size: 14px;
+      transition: color 0.3s ease-in-out;
+    }
+
+    .option:hover,
+    .option.selected {
+      color: #00a8ff;
+    }
+
+    .options-list::-webkit-scrollbar {
+      width: 4px;
+      background-color: #eee;
+    }
+
+    .options-list::-webkit-scrollbar-thumb {
+      background-color: #00a8ff;
+    }
+
+    .options-list.active {
+      max-height: 180px; 
+      padding: 20px 20px 0; 
+    }
+
+    .select .fa {
+      transition: transform 0.3s ease;
+    }
+
+    .select .fa-angle-up {
+      transform: rotate(180deg); 
+    }
+  </style>
+</head>
+<body>
+  <div class="select-menu">
+    <div class="select">
+      <span>Select Language</span>
+      <i class="fas fa-angle-down"></i>
+    </div>
+    <div class="options-list">
+      <div class="option"><i class="fas fa-flag-usa"></i> English</div>
+      <div class="option"><i class="fas fa-flag"></i> Arabic</div>
+      <div class="option"><i class="fas fa-flag"></i> Hindi</div>
+      <div class="option"><i class="fas fa-flag"></i> Spanish</div>
+      <div class="option"><i class="fas fa-flag"></i> French</div>
+      <div class="option"><i class="fas fa-flag"></i> Japanese</div>
+      <div class="option"><i class="fas fa-flag"></i> Korean</div>
+    </div>
+  </div>
+
+  <script>
+    const select = document.querySelector(".select");
+    const options_list = document.querySelector(".options-list");
+    const options = document.querySelectorAll(".option");
+
+    
+    select.addEventListener("click", () => {
+      options_list.classList.toggle("active");
+      select.querySelector(".fa-angle-down").classList.toggle("fa-angle-up");
+     
+      if (options_list.classList.contains("active")) {
+        options_list.style.maxHeight = options_list.scrollHeight + "px";
+      } else {
+        options_list.style.maxHeight = 0;
+      }
+    });
+
+    
+    options.forEach((option) => {
+      option.addEventListener("click", () => {
+        options.forEach((opt) => { opt.classList.remove('selected') });
+        select.querySelector("span").innerHTML = option.innerHTML;
+        option.classList.add("selected");
+        options_list.classList.toggle("active");
+        select.querySelector(".fa-angle-down").classList.toggle("fa-angle-up");
+      });
+    });
+  </script>
+</body>
+</html>

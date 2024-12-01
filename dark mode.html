@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dark and Light Theme Toggle</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<style>
+body {
+    font-family: 'Arial', sans-serif;
+    transition: background 0.5s, color 0.5s;
+    background: linear-gradient(135deg, #ffffff, #f0f8ff); 
+    color: #333;
+}
+
+body.dark {
+    background: linear-gradient(135deg, #333, #555); 
+    color: #ffffff;
+}
+
+.theme-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+}
+
+.day-night {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
+    font-size: 24px;
+    transition: transform 0.3s;
+    background: rgba(255, 255, 255, 0.8); 
+    border-radius: 50%;
+    padding: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.day-night:hover {
+    transform: scale(1.1); 
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2); 
+}
+
+h1 {
+    margin: 20px 0;
+    font-size: 3em;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+p {
+    font-size: 1.2em;
+    line-height: 1.5;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+</style>
+<body>
+    <div class="theme-container">
+        <div class="day-night">
+            <i class="fas fa-moon"></i> 
+        </div>
+        <h1> Hi Shehab</h1>
+        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Molestias tenetur 
+            animi officiis ratione voluptate, possimus, vitae laudantium explicabo 
+            atque tempora architecto 
+            quia? Architecto minus illum nemo velit vel aspernatur doloremque?.</p>
+    </div>
+
+    <script>
+const dayNight = document.querySelector(".day-night");
+
+dayNight.addEventListener("click", () => {
+    dayNight.querySelector("i").classList.toggle("fa-sun");
+    dayNight.querySelector("i").classList.toggle("fa-moon");
+    document.body.classList.toggle("dark");
+});
+
+window.addEventListener("load", () => {
+    if (document.body.classList.contains("dark")) {
+        dayNight.querySelector("i").classList.add("fa-sun");
+    } else {
+        dayNight.querySelector("i").classList.add("fa-moon");
+    }
+});
+
+    </script>
+</body>
+</html>

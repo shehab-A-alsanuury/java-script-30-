@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drag & Drop</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #3a3a3c, #1c1c1e);
+            color: #ffffff;
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            animation: fadeIn 1s ease-in-out;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.6);
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            max-width: 800px;
+            margin-bottom: 20px;
+        }
+
+        .drop-area {
+            width: 300px;
+            height: 300px;
+            border: 2px dashed #ffcc00;
+            border-radius: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            justify-content: center;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            transition: background 0.3s, border 0.3s;
+        }
+
+        .drop-area.drag-over {
+            background: rgba(255, 255, 0, 0.2);
+            border-color: #00ff99;
+        }
+
+        .draggable-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .draggable {
+            width: 60px;
+            height: 60px;
+            background: rgba(0, 128, 255, 0.8);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 1.2em;
+            cursor: grab;
+            transition: transform 0.2s, background-color 0.3s;
+        }
+
+        .draggable:hover {
+            transform: scale(1.05);
+            background-color: rgba(0, 160, 255, 0.9);
+        }
+
+        .draggable:active {
+            cursor: grabbing;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                flex-direction: column;
+            }
+            .drop-area {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1><i class="fas fa-arrows-alt"></i> Enhanced Drag & Drop</h1>
+    <div class="container">
+        <div class="drop-area" id="dropArea">
+            <p>Drop Here</p>
+        </div>
+        <div class="draggable-container">
+            <div class="draggable" draggable="true" id="draggableItem1">
+                <i class="fas fa-star"></i>
+            </div>
+            <div class="draggable" draggable="true" id="draggableItem2">
+                <i class="fas fa-heart"></i>
+            </div>
+            <div class="draggable" draggable="true" id="draggableItem3">
+                <i class="fas fa-check"></i>
+            </div>
+            <div class="draggable" draggable="true" id="draggableItem4">
+                <i class="fas fa-circle"></i>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const dropArea = document.getElementById('dropArea');
+        const draggableItems = document.querySelectorAll('.draggable');
+        const draggableContainer = document.querySelector('.draggable-container');
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false);
+        });
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, unhighlight, false);
+        });
+
+        dropArea.addEventListener('drop', handleDrop, false);
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        function highlight() {
+            dropArea.classList.add('drag-over');
+        }
+
+        function unhighlight() {
+            dropArea.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const draggableId = dt.getData('text/plain');
+            const draggable = document.getElementById(draggableId);
+            
+            if (dropArea.contains(draggable)) {
+                draggableContainer.appendChild(draggable);
+            } else {
+                dropArea.appendChild(draggable);
+            }
+            
+            unhighlight();
+        }
+
+        draggableItems.forEach(item => {
+            item.addEventListener('dragstart', (event) => {
+                event.dataTransfer.setData('text/plain', item.id);
+                item.style.opacity = '0.5';
+            });
+
+            item.addEventListener('dragend', () => {
+                item.style.opacity = '1';
+            });
+        });
+
+        dropArea.addEventListener('dragover', (event) => {
+            event.preventDefault();
+        });
+
+        
+        draggableContainer.addEventListener('dragover', (event) => {
+            event.preventDefault();
+        });
+
+        draggableContainer.addEventListener('drop', (event) => {
+            event.preventDefault();
+            const draggableId = event.dataTransfer.getData('text/plain');
+            const draggable = document.getElementById(draggableId);
+            
+            if (dropArea.contains(draggable)) {
+                draggableContainer.appendChild(draggable);
+            }
+        });
+    </script>
+</body>
+</html>
